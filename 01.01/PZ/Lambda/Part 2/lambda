@@ -1,0 +1,108 @@
+# 1. Лямбда-функция для возведения в куб
+cube = lambda x: x ** 3
+print("Задание 1:")
+print(f"2 в кубе: {cube(2)}")
+print(f"3 в кубе: {cube(3)}")
+print(f"4 в кубе: {cube(4)}")
+print()
+
+# 2. Умножение каждого числа на 10 с помощью map
+numbers1 = [1, 2, 3, 4, 5]
+result2 = list(map(lambda x: x * 10, numbers1))
+print("Задание 2:")
+print(f"Исходный список: {numbers1}")
+print(f"Результат: {result2}")
+print()
+
+# 3. Фильтрация чисел больше 20
+numbers2 = [10, 15, 20, 25, 30]
+result3 = list(filter(lambda x: x > 20, numbers2))
+print("Задание 3:")
+print(f"Исходный список: {numbers2}")
+print(f"Результат: {result3}")
+print()
+
+# 4. Лямбда-функция для определения длины строки
+string_length = lambda s: len(s)
+print("Задание 4:")
+print(f"Длина 'hello': {string_length('hello')}")
+print(f"Длина 'python': {string_length('python')}")
+print()
+
+# 5. Преобразование строк в их длины с помощью map и lambda
+strings = ["cat", "dog", "elephant"]
+result5 = list(map(lambda s: len(s), strings))
+print("Задание 5:")
+print(f"Исходный список: {strings}")
+print(f"Результат: {result5}")
+print()
+
+# 6. Фильтрация чисел, кратных 5
+numbers3 = list(range(1, 11))  # [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+result6 = list(filter(lambda x: x % 5 == 0, numbers3))
+print("Задание 6:")
+print(f"Исходный список: {numbers3}")
+print(f"Результат: {result6}")
+
+# 1. Класс прямоугольника
+class Rectangle:
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height
+        # Лямбда-выражение для вычисления площади
+        self.area = lambda: self.width * self.height
+
+print("Задание 1:")
+rect1 = Rectangle(5, 3)
+rect2 = Rectangle(7, 4)
+print(f"Площадь прямоугольника 5x3: {rect1.area()}")
+print(f"Площадь прямоугольника 7x4: {rect2.area()}")
+print()
+
+# 2. Класс студента
+class Student:
+    def __init__(self, surname, grade):
+        self.surname = surname
+        self.grade = grade
+    
+    def is_passed(self):
+        return self.grade >= 4
+
+print("Задание 2:")
+students = [
+    Student("Иванов", 3),
+    Student("Петров", 5),
+    Student("Сидоров", 4),
+    Student("Козлов", 2)
+]
+
+# Фильтрация сдавших студентов
+passed_students = list(filter(lambda s: s.is_passed(), students))
+print("Сдали экзамен:")
+for student in passed_students:
+    print(f"{student.surname} - оценка {student.grade}")
+print()
+
+# 3. Класс машины
+class Car:
+    def __init__(self, brand, year):
+        self.brand = brand
+        self.year = year
+    
+    def is_old(self):
+        from datetime import datetime
+        return (datetime.now().year - self.year) > 10
+
+print("Задание 3:")
+cars = [
+    Car("Toyota", 2010),
+    Car("Tesla", 2022),
+    Car("BMW", 2015),
+    Car("Lada", 2000)
+]
+
+# Преобразование в список строк
+car_status = list(map(lambda c: f"{c.brand} – {'старая' if c.is_old() else 'новая'}", cars))
+print("Статус машин:")
+for status in car_status:
+    print(status)
