@@ -1,0 +1,219 @@
+class StationeryItem:
+    def __init__(self, name="", price=0.0, quantity=0, category="", manufacturer=""):
+        self._name = name
+        self._price = price
+        self._quantity = quantity
+        self._category = category
+        self._manufacturer = manufacturer
+    def get_name(self):
+        return self._name
+    def get_price(self):
+        return self._price
+    def get_quantity(self):
+        return self._quantity
+    def get_category(self):
+        return self._category
+    def get_manufacturer(self):
+        return self._manufacturer
+    def set_name(self, name):
+        if isinstance(name, str) and len(name) > 0:
+            self._name = name
+        else:
+            print("Ошибка: название должно быть не пустой строкой")
+    def set_price(self, price):
+        if isinstance(price, (int, float)) and price >= 0:
+            self._price = price
+        else:
+            print("Ошибка: цена должна быть не отрицательным числом")
+    def set_quantity(self, quantity):
+        if isinstance(quantity, int) and quantity >= 0:
+            self._quantity = quantity
+        else:
+            print("Ошибка: количество должно быть не отрицательным целым числом")
+    def set_category(self, category):
+        if isinstance(category, str) and len(category) > 0:
+            self._category = category
+        else:
+            print("Ошибка: категория должна быть не пустой строкой")
+    def set_manufacturer(self, manufacturer):
+        if isinstance(manufacturer, str) and len(manufacturer) > 0:
+            self._manufacturer = manufacturer
+        else:
+            print("Ошибка: производитель должен быть не пустой строкой")
+    def calculate_total_value(self):
+        return self._price * self._quantity
+    def apply_discount(self, discount_percent):
+        if 0 <= discount_percent <= 100:
+            self._price = self._price * (1 - discount_percent / 100)
+            return True
+        return False
+    def update_stock(self, amount, operation="add"):
+        if operation == "add":
+            self._quantity += amount
+            return f"Добавлено {amount} единиц. Новое количество: {self._quantity}"
+        elif operation == "remove":
+            if self._quantity >= amount:
+                self._quantity -= amount
+                return f"Удалено {amount} единиц. Новое количество: {self._quantity}"
+            else:
+                return "Ошибка: недостаточно товара на складе"
+        else:
+            return "Неизвестная операция"
+def test_stationery_item():
+    print("=== Тестирование класса StationeryItem ===")
+    pen = StationeryItem("Ручка шариковая", 25.50, 100, "Письменные принадлежности", "Brauberg")
+    print(f"Название: {pen.get_name()}")
+    print(f"Цена: {pen.get_price()}")
+    print(f"Количество: {pen.get_quantity()}")
+    pen.set_price(30.75)
+    pen.set_quantity(150)
+    print(f"Новая цена: {pen.get_price()}")
+    print(f"Новое количество: {pen.get_quantity()}")
+    print(f"Общая стоимость: {pen.calculate_total_value()}")
+    pen.apply_discount(10)
+    print(f"Цена после скидки: {pen.get_price()}")
+    print(pen.update_stock(50, "add"))
+    print(pen.update_stock(200, "remove"))
+if __name__ == "__main__":
+    test_stationery_item()
+import random
+from datetime import datetime
+class StationeryGame:
+    def __init__(self):
+        self._inventory = []
+        self._balance = 10000
+        self._day = 1
+        self._customers_served = 0
+    def add_product(self, name, price, quantity, category, manufacturer):
+        """Добавление товара в инвентарь"""
+        new_item = StationeryItem(name, price, quantity, category, manufacturer)
+        self._inventory.append(new_item)
+        return f"Товар '{name}' добавлен в инвентарь"
+    def simulate_day(self):
+        """Симуляция рабочего дня"""
+        print(f"\n=== День {self._day} ===")
+        if not self._inventory:
+            print("Нет товаров для продажи!")
+            return
+        daily_profit = 0
+        customers_today = random.randint(5, 15)
+        for customer in range(customers_today):
+            if not self._inventory:
+                break
+            product = random.choice(self._inventory)
+            max_quantity = min(product.get_quantity(), random.randint(1, 10))
+            if max_quantity > 0:
+                quantity_bought = random.randint(1, max_quantity)
+                sale_amount = product.get_price() * quantity_bought
+                product.update_stock(quantity_bought, "remove")
+                self._balance += sale_amount
+                daily_profit += sale_amount
+                self._customers_served += 1
+                print(f"Продано: {quantity_bought} x {product.get_name()} - {sale_amount:.2f} руб.")
+        print(f"Прибыль за день: {daily_profit:.2f} руб.")
+        print(f"Обслужено клиентов: {customers_today}")
+        print(f"Общий баланс: {self._balance:.2f} руб.")
+        self._day += 1
+    def show_inventory(self):
+        print("\n=== Текущий инвентарь ===")
+        if not self._inventory:
+            print("Инвентарь пуст")
+            return
+        total_value = 0
+        for i, item in enumerate(self._inventory, 1):
+            item_value = item.calculate_total_value()
+            total_value += item_value
+            print(f"{i}. {item.get_name()} - {item.get_quantity()} шт. - {item_value:.2f} руб.")
+        print(f"Общая стоимость инвентаря: {total_value:.2f} руб.")
+    def restock_product(self, product_index, quantity):
+        if 0 <= product_index < len(self._inventory):
+            product = self._inventory[product_index]
+            cost = product.get_price() * quantity * 0.7 
+            if self._balance >= cost:
+                self._balance -= cost
+                product.update_stock(quantity, "add")
+                return f"Закуплено {quantity} единиц {product.get_name()}. Стоимость: {cost:.2f} руб."
+            else:
+                return "Недостаточно средств для закупки"
+        else:
+            return "Товар не найден"
+    def get_game_stats(self):
+        return {
+            'day': self._day,
+            'balance': self._balance,
+            'customers_served': self._customers_served,
+            'products_count': len(self._inventory),
+            'total_inventory_value': sum(item.calculate_total_value() for item in self._inventory)
+        }
+def apply_random_events(game):
+    events = [
+        "Акция на все товары!",
+        "Поставщик повысил цены",
+        "Сезон школьных покупок",
+        "Технические проблемы"
+    ]
+    event = random.choice(events)
+    print(f"\n⚡ Событие: {event}")
+    if event == "Акция на все товары!":
+        for item in game._inventory:
+            item.apply_discount(15)
+        print("На все товары применена скидка 15%!")
+    elif event == "Поставщик повысил цены":
+        for item in game._inventory:
+            item.set_price(item.get_price() * 1.1)
+        print("Цены на товары повышены на 10%")
+def play_game():
+    game = StationeryGame()
+    initial_products = [
+        ("Ручка шариковая", 25.50, 50, "Письменные принадлежности", "Brauberg"),
+        ("Тетрадь 48л", 45.00, 30, "Тетради", "Апплика"),
+        ("Карандаш простой", 15.00, 100, "Письменные принадлежности", "Koh-i-Noor"),
+        ("Ластик", 12.00, 80, "Чертежные принадлежности", "Faber-Castell"),
+        ("Линейка 20см", 18.00, 40, "Чертежные принадлежности", "Attache")
+    ]
+    for product in initial_products:
+        game.add_product(*product)
+    print("🎮 Добро пожаловать в игру 'Магазин канцелярских товаров'!")
+    print("Цель: управлять магазином и увеличивать прибыль")
+    while True:
+        print("\n" + "="*50)
+        print("1 - Симулировать день")
+        print("2 - Показать инвентарь")
+        print("3 - Пополнить запасы")
+        print("4 - Статистика")
+        print("5 - Выйти")
+        choice = input("Выберите действие: ")
+        if choice == "1":
+            if random.random() < 0.3:
+                apply_random_events(game)
+            game.simulate_day()
+            stats = game.get_game_stats()
+            if stats['balance'] <= 0:
+                print("\n💸 Игра окончена! Ваш магазин обанкротился.")
+                break
+            elif stats['day'] > 30:
+                print("\n🎉 Поздравляем! Вы успешно управляли магазином 30 дней!")
+                break
+        elif choice == "2":
+            game.show_inventory()
+        elif choice == "3":
+            game.show_inventory()
+            try:
+                product_idx = int(input("Номер товара для пополнения: ")) - 1
+                quantity = int(input("Количество: "))
+                result = game.restock_product(product_idx, quantity)
+                print(result)
+            except (ValueError, IndexError):
+                print("Ошибка ввода!")
+        elif choice == "4":
+            stats = game.get_game_stats()
+            print("\n=== Статистика ===")
+            for key, value in stats.items():
+                print(f"{key}: {value}")
+        elif choice == "5":
+            print("Спасибо за игру!")
+            break
+        else:
+            print("Неверный выбор!")
+if __name__ == "__main__":
+    play_game()
