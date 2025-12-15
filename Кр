@@ -1,0 +1,16 @@
+class Worker:
+    def start(self):
+      return "Кормит животных"
+    def stop(self):
+      return "Не кормит животных"
+class Animals():
+    def start(self):
+      return "Животное ест"
+    def stop(self):
+      return "Животное гуляет и голодает"
+class Food():
+    def start(self):
+      return "Еда есть"
+    def stop(self):
+      return "Еды нет"
+     
